@@ -48,11 +48,11 @@ class Login extends React.Component {
     return (
       <fieldset>
         <form>
-          Email:
           <label htmlFor="email">
             <input
               type="email"
               name="email"
+              placeholder="Type your email"
               value={ email }
               onChange={ this.handleChange }
               data-testid="email-input"
@@ -60,10 +60,10 @@ class Login extends React.Component {
             />
           </label>
           <label htmlFor="password">
-            Password
             <input
               type="password"
               name="password"
+              placeholder="Type your password"
               value={ password }
               minLength="6"
               onChange={ this.handleChange }

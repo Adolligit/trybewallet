@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import { apiRequest } from '../actions/index';
 
@@ -11,9 +12,9 @@ class Wallet extends React.Component {
   }
 
   componentDidMount() {
-    const { apiRequest } = this.props;
+    const { fetchApi } = this.props;
 
-    apiRequest();
+    fetchApi();
   }
 
   render() {
@@ -31,9 +32,12 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    apiRequest: () => dispatch(apiRequest()),
+    fetchApi: () => dispatch(apiRequest()),
   };
 }
 
+Wallet.propTypes = {
+  fetchApi: PropTypes.func,
+}.isRequired;
+
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);
-// export default Wallet;

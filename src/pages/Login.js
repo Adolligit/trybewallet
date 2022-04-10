@@ -43,41 +43,29 @@ class Login extends React.Component {
 
   render() {
     const { payload, validInput } = this.state;
-    const { email, password } = payload;
-
     return (
       <fieldset>
-        <form>
-          <label htmlFor="email">
+        {
+          Object.keys(payload).map((key) => (
             <input
-              type="email"
-              name="email"
-              placeholder="Digite seu email"
-              value={ email }
-              onChange={ this.handleChange }
-              data-testid="email-input"
-              required
-            />
-          </label>
-          <label htmlFor="password">
-            <input
-              type="password"
-              name="password"
-              placeholder="Digite sua senha"
-              value={ password }
+              key={ key }
+              type={ key }
+              name={ key }
+              placeholder={ `Type your ${key}` }
+              value={ payload[key] }
               minLength="6"
               onChange={ this.handleChange }
-              data-testid="password-input"
+              data-testid={ `${key}-input` }
               required
             />
-          </label>
-          <input
-            type="submit"
-            value="Entrar"
-            disabled={ !(validInput.email && validInput.password) }
-            onClick={ () => this.submitForm(payload) }
-          />
-        </form>
+          ))
+        }
+        <input
+          type="submit"
+          value="Entrar"
+          disabled={ !(validInput.email && validInput.password) }
+          onClick={ () => this.submitForm(payload) }
+        />
       </fieldset>
     );
   }

@@ -52,7 +52,7 @@ class Login extends React.Component {
             <input
               type="email"
               name="email"
-              placeholder="Type your email"
+              placeholder="Digite seu email"
               value={ email }
               onChange={ this.handleChange }
               data-testid="email-input"
@@ -63,7 +63,7 @@ class Login extends React.Component {
             <input
               type="password"
               name="password"
-              placeholder="Type your password"
+              placeholder="Digite sua senha"
               value={ password }
               minLength="6"
               onChange={ this.handleChange }
@@ -75,7 +75,7 @@ class Login extends React.Component {
             type="submit"
             value="Entrar"
             disabled={ !(validInput.email && validInput.password) }
-            onClick={ this.submitForm }
+            onClick={ () => this.submitForm(payload) }
           />
         </form>
       </fieldset>

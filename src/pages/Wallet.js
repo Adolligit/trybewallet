@@ -3,36 +3,28 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import { apiRequest } from '../actions/index';
+import Form from '../components/Form';
 
 class Wallet extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {};
-  }
-
   componentDidMount() {
-    const { fetchApi } = this.props;
+    const { fetchAPI } = this.props;
 
-    fetchApi();
+    fetchAPI();
   }
 
   render() {
     return (
-      <Header />
+      <>
+        <Header />
+        <Form />
+      </>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    currencies: state.wallet.currencies,
-  };
-}
-
 function mapDispatchToProps(dispatch) {
   return {
-    fetchApi: () => dispatch(apiRequest()),
+    fetchAPI: () => dispatch(apiRequest()),
   };
 }
 
@@ -40,4 +32,4 @@ Wallet.propTypes = {
   fetchApi: PropTypes.func,
 }.isRequired;
 
-export default connect(mapStateToProps, mapDispatchToProps)(Wallet);
+export default connect(null, mapDispatchToProps)(Wallet);

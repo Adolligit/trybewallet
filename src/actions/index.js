@@ -8,7 +8,7 @@ export const apiResponse = (response) => ({ type: API_REQUEST, response });
 
 export const apiRequest = () => async (dispatch) => {
   const jsonData = await noUSDT();
-  const arrData = jsonData.map((acronym) => acronym);
+  const arrData = jsonData.map((acronymCoin) => acronymCoin);
 
   dispatch(apiResponse(arrData));
 };

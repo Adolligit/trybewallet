@@ -10,6 +10,5 @@ export default async function coins() {
 export async function noUSDT() {
   const jsonData = await coins();
   delete jsonData.USDT;
-  // return Object.keys(jsonData).filter((coin) => coin !== 'USDT');
   return jsonData;
 }

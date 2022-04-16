@@ -28,7 +28,7 @@ class Wallet extends React.Component {
 
 function mapStateToProps({ wallet }) {
   return {
-    jsonData: wallet.response,
+    jsonData: wallet.jsonNoUSDT,
   };
 }
 

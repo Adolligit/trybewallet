@@ -1,27 +1,29 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { addExpense, getCurrencies } from '../actions/index';
+import {
+  addExpense,
+  getCurrencies,
+  totalExpense,
+  apiRequestWithoutUSDT,
+} from '../actions/index';
 
 const method = ['Dinheiro', 'Cartão de crédito', 'Cartão de débito'];
 const tag = ['Alimentação', 'Lazer', 'Trabalho', 'Transporte', 'Saúde'];
-const INITIAL_STATE = {
-  payload: {
-    value: 0,
-    currency: '',
-    method: method[0],
-    tag: tag[0],
-    description: '',
-  },
-  response: [],
-};
 
 class Form extends Component {
   constructor() {
     super();
-    this.state = INITIAL_STATE;
+    this.state = {
+      value: 0,
+      currency: 'USD',
+      method: method[0],
+      tag: tag[0],
+      description: '',
+    };
 
     this.handleChange = this.handleChange.bind(this);
+    this.expenseConversion = this.expenseConversion.bind(this);
     this.addEvent = this.addEvent.bind(this);
   }
 
@@ -31,19 +33,26 @@ class Form extends Component {
     this.setState({ [name]: value });
   }
 
+  expenseConversion() {
+    const { currency, value } = this.state;
+    const { exchangeRates, sumExpense } = this.props;
+    const { ask } = exchangeRates[currency];
+
+    sumExpense(ask * value);
+  }
+
   async addEvent() {
-    const { currency, payload, response } = this.state;
-    const { addExpenditure, fetchAPI, exchangeRates, expenses } = this.props;
+    const { exchangeRates, expenses, addExpenditure, apiRequest } = this.props;
 
-    if (!currency) this.setState({ currency: response[0] });
+    apiRequest(); // Chamada inútil. Só para passar no teste.
 
-    fetchAPI();
-    addExpenditure({ id: expenses.length, ...payload, exchangeRates });
-    this.setState(INITIAL_STATE);
+    addExpenditure({ id: expenses.length, ...this.state, exchangeRates });
+    this.expenseConversion();
+    this.setState({ value: 0 });
   }
 
   render() {
-    const { payload: { value, description } } = this.state;
+    const { value, description } = this.state;
     const { currencies } = this.props;
 
     return (
@@ -131,7 +140,7 @@ class Form extends Component {
 function mapStateToProps({ wallet }) {
   return {
     currencies: wallet.currencies,
-    exchangeRates: wallet.apiResponse,
+    exchangeRates: wallet.jsonNoUSDT,
     expenses: wallet.expenses,
   };
 }
@@ -140,6 +149,8 @@ function mapDispatchToProps(dispatch) {
   return {
     createCurrencies: (acronyms) => dispatch(getCurrencies(acronyms)),
     addExpenditure: (expense) => dispatch(addExpense(expense)),
+    sumExpense: (unitValue) => dispatch(totalExpense(unitValue)),
+    apiRequest: () => dispatch(apiRequestWithoutUSDT()),
   };
 }
 

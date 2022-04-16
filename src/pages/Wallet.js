@@ -2,17 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
-import { apiRequest } from '../actions/index';
 import Form from '../components/Form';
+import { apiRequestWithoutUSDT, getCurrencies } from '../actions/index';
 
 class Wallet extends React.Component {
   componentDidMount() {
-    const { fetchAPI } = this.props;
+    const { requestAPIWithouUSDT } = this.props;
 
-    fetchAPI();
+    requestAPIWithouUSDT();
   }
 
   render() {
+    const { jsonData, vectorOfCoins } = this.props;
+
+    if (jsonData) vectorOfCoins(Object.keys(jsonData));
+
     return (
       <>
         <Header />
@@ -22,14 +26,21 @@ class Wallet extends React.Component {
   }
 }
 
+function mapStateToProps({ wallet }) {
+  return {
+    jsonData: wallet.response,
+  };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
-    fetchAPI: () => dispatch(apiRequest()),
+    requestAPIWithouUSDT: () => dispatch(apiRequestWithoutUSDT()),
+    vectorOfCoins: (currencies) => dispatch(getCurrencies(currencies)),
   };
 }
 
 Wallet.propTypes = {
-  fetchApi: PropTypes.func,
+  requestAPIWithouUSDT: PropTypes.func,
 }.isRequired;
 
-export default connect(null, mapDispatchToProps)(Wallet);
+export default connect(mapStateToProps, mapDispatchToProps)(Wallet);

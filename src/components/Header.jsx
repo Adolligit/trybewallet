@@ -16,14 +16,16 @@ class Header extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps({ user }) {
   return {
-    email: state.user.email,
+    email: user.email,
+    totalExpenses: user.totalExpenses,
   };
 }
 
 Header.propTypes = {
-  emai: PropTypes.string,
+  email: PropTypes.string,
+  ask: PropTypes.number,
 }.isRequired;
 
 export default connect(mapStateToProps)(Header);

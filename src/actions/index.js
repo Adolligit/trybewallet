@@ -1,14 +1,17 @@
 import { noUSDT } from '../api/coins';
 
 export const SAVED_EMAIL = 'SAVED_EMAIL';
-export const API_REQUEST = 'API_REQUEST';
+export const GET_CURRENCIES = 'GET_CURRENCIES';
+export const API_REQUEST_NO_USDT = 'REQUEST_NO_USDT';
+export const ADD_EXPENSE = 'ADD_EXPENSE';
 
 export const savedEmail = (payload) => ({ type: SAVED_EMAIL, payload });
-export const apiResponse = (response) => ({ type: API_REQUEST, response });
+export const NoUSDT = (response) => ({ type: API_REQUEST_NO_USDT, response });
+export const getCurrencies = (currencies) => ({ type: GET_CURRENCIES, currencies });
+export const addExpense = (expense) => ({ type: ADD_EXPENSE, expense });
 
-export const apiRequest = () => async (dispatch) => {
-  const jsonData = await noUSDT();
-  const arrData = jsonData.map((acronymCoin) => acronymCoin);
+export const apiRequestWithoutUSDT = () => async (dispatch) => {
+  const response = await noUSDT();
 
-  dispatch(apiResponse(arrData));
+  dispatch(NoUSDT(response));
 };

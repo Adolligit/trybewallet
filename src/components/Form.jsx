@@ -1,19 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { addExpense, getCurrencies } from '../actions/index';
 
 const method = ['Dinheiro', 'Cartão de crédito', 'Cartão de débito'];
 const tag = ['Alimentação', 'Lazer', 'Trabalho', 'Transporte', 'Saúde'];
+const INITIAL_STATE = {
+  payload: {
+    value: 0,
+    currency: '',
+    method: method[0],
+    tag: tag[0],
+    description: '',
+  },
+  response: [],
+};
 
 class Form extends Component {
   constructor() {
     super();
-    this.state = {
-      expense: 0,
-      description: '',
-    };
+    this.state = INITIAL_STATE;
 
     this.handleChange = this.handleChange.bind(this);
+    this.addEvent = this.addEvent.bind(this);
   }
 
   handleChange({ target }) {
@@ -22,19 +31,30 @@ class Form extends Component {
     this.setState({ [name]: value });
   }
 
+  async addEvent() {
+    const { currency, payload, response } = this.state;
+    const { addExpenditure, fetchAPI, exchangeRates, expenses } = this.props;
+
+    if (!currency) this.setState({ currency: response[0] });
+
+    fetchAPI();
+    addExpenditure({ id: expenses.length, ...payload, exchangeRates });
+    this.setState(INITIAL_STATE);
+  }
+
   render() {
-    const { expense, description } = this.state;
+    const { payload: { value, description } } = this.state;
     const { currencies } = this.props;
 
     return (
       <fieldset>
-        <label htmlFor="expense">
+        <label htmlFor="value">
           Valor:
           <input
-            name="expense"
+            name="value"
             type="number"
             data-testid="value-input"
-            value={ expense }
+            value={ value }
             onChange={ this.handleChange }
           />
         </label>
@@ -98,14 +118,28 @@ class Form extends Component {
             onChange={ this.handleChange }
           />
         </label>
+        <input
+          value="Adicionar despesa"
+          type="button"
+          onClick={ this.addEvent }
+        />
       </fieldset>
     );
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps({ wallet }) {
   return {
-    currencies: state.wallet.currencies,
+    currencies: wallet.currencies,
+    exchangeRates: wallet.apiResponse,
+    expenses: wallet.expenses,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    createCurrencies: (acronyms) => dispatch(getCurrencies(acronyms)),
+    addExpenditure: (expense) => dispatch(addExpense(expense)),
   };
 }
 
@@ -113,4 +147,4 @@ Form.propTypes = {
   currencies: PropTypes.arrayOf(),
 }.isRequired;
 
-export default connect(mapStateToProps)(Form);
+export default connect(mapStateToProps, mapDispatchToProps)(Form);

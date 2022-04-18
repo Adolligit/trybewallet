@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import {
   addExpense,
   getCurrencies,
-  totalExpense,
   apiRequestWithoutUSDT,
 } from '../actions/index';
 
@@ -23,7 +22,6 @@ class Form extends Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.expenseConversion = this.expenseConversion.bind(this);
     this.addEvent = this.addEvent.bind(this);
   }
 
@@ -33,21 +31,11 @@ class Form extends Component {
     this.setState({ [name]: value });
   }
 
-  expenseConversion() {
-    const { currency, value } = this.state;
-    const { exchangeRates, sumExpense } = this.props;
-    const { ask } = exchangeRates[currency];
-
-    sumExpense(ask * value);
-  }
-
   async addEvent() {
     const { exchangeRates, expenses, addExpenditure, apiRequest } = this.props;
 
-    apiRequest(); // Chamada inútil. Só para passar no teste.
-
+    apiRequest();
     addExpenditure({ id: expenses.length, ...this.state, exchangeRates });
-    this.expenseConversion();
     this.setState({ value: 0 });
   }
 
@@ -149,13 +137,10 @@ function mapDispatchToProps(dispatch) {
   return {
     createCurrencies: (acronyms) => dispatch(getCurrencies(acronyms)),
     addExpenditure: (expense) => dispatch(addExpense(expense)),
-    sumExpense: (unitValue) => dispatch(totalExpense(unitValue)),
     apiRequest: () => dispatch(apiRequestWithoutUSDT()),
   };
 }
 
-Form.propTypes = {
-  currencies: PropTypes.arrayOf(),
-}.isRequired;
+Form.propTypes = { currencies: PropTypes.arrayOf() }.isRequired;
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form);

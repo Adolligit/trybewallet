@@ -5,6 +5,7 @@ import {
   addExpense,
   getCurrencies,
   apiRequestWithoutUSDT,
+  setExpenseEdit,
 } from '../actions/index';
 
 const method = ['Dinheiro', 'Cartão de crédito', 'Cartão de débito'];
@@ -23,6 +24,7 @@ class Form extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.addEvent = this.addEvent.bind(this);
+    this.editEvent = this.editEvent.bind(this);
   }
 
   handleChange({ target }) {
@@ -31,7 +33,7 @@ class Form extends Component {
     this.setState({ [name]: value });
   }
 
-  async addEvent() {
+  addEvent() {
     const { exchangeRates, expenses, addExpenditure, apiRequest } = this.props;
 
     apiRequest();
@@ -39,9 +41,17 @@ class Form extends Component {
     this.setState({ value: 0 });
   }
 
+  editEvent() {
+    const { indexExpenseEdit, expenses, setExpense } = this.props;
+
+    expenses[indexExpenseEdit] = { ...expenses[indexExpenseEdit], ...this.state };
+    setExpense(expenses);
+    this.setState({ value: 0 });
+  }
+
   render() {
     const { value, description } = this.state;
-    const { currencies } = this.props;
+    const { currencies, indexExpenseEdit } = this.props;
 
     return (
       <fieldset>
@@ -116,9 +126,11 @@ class Form extends Component {
           />
         </label>
         <input
-          value="Adicionar despesa"
+          value={
+            (indexExpenseEdit !== undefined) ? 'Editar despesa' : 'Adicionar despesa'
+          }
           type="button"
-          onClick={ this.addEvent }
+          onClick={ (indexExpenseEdit !== undefined) ? this.editEvent : this.addEvent }
         />
       </fieldset>
     );
@@ -130,6 +142,7 @@ function mapStateToProps({ wallet }) {
     currencies: wallet.currencies,
     exchangeRates: wallet.jsonNoUSDT,
     expenses: wallet.expenses,
+    indexExpenseEdit: wallet.indexExpenseEdit,
   };
 }
 
@@ -138,6 +151,7 @@ function mapDispatchToProps(dispatch) {
     createCurrencies: (acronyms) => dispatch(getCurrencies(acronyms)),
     addExpenditure: (expense) => dispatch(addExpense(expense)),
     apiRequest: () => dispatch(apiRequestWithoutUSDT()),
+    setExpense: (expense) => dispatch(setExpenseEdit(expense)),
   };
 }
 

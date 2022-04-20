@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { removeExpense } from '../actions';
+import { removeExpense, getExpenseEdit } from '../actions';
 
 class Table extends Component {
   render() {
-    const { expenses, deleteExpense } = this.props;
+    const { expenses, deleteExpense, editExpense } = this.props;
 
     return (
       <table>
@@ -24,7 +24,7 @@ class Table extends Component {
         </thead>
         <tbody>
           {
-            expenses.map((expense) => {
+            expenses.map((expense, index) => {
               const { name, ask } = expense.exchangeRates[expense.currency];
               const convertedValue = (ask * expense.value).toFixed(2);
               const value = (
@@ -48,6 +48,7 @@ class Table extends Component {
                       value="Editar"
                       type="button"
                       data-testid="edit-btn"
+                      onClick={ () => editExpense(index) }
                     />
                     <input
                       value="Excluir"
@@ -71,6 +72,7 @@ const mapStateToProps = ({ wallet }) => ({ expenses: wallet.expenses });
 function mapDispatchToProps(dispatch) {
   return {
     deleteExpense: (id, value) => dispatch(removeExpense(id, value)),
+    editExpense: (expense) => dispatch(getExpenseEdit(expense)),
   };
 }
 

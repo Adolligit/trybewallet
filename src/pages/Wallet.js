@@ -22,7 +22,7 @@ class Wallet extends React.Component {
       <>
         <Header />
         <Form />
-        <Table list={ 2 + 1 } />
+        <Table />
       </>
     );
   }
